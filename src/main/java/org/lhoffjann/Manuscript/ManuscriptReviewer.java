@@ -86,20 +86,22 @@ public class ManuscriptReviewer {
         if (completed == ConfirmChoice.ConfirmationValue.YES){
             ConsolePrompt prompt1 = new ConsolePrompt();                     // #2
             PromptBuilder promptBuilder1 = prompt1.getPromptBuilder();        // #3
-            ListPromptBuilder listPromptBuilder = promptBuilder1.createListPrompt();
-            listPromptBuilder.name("manuscript").message("With which page do you want to swap?");
+            ListPromptBuilder listPromptBuilder1 = promptBuilder1.createListPrompt();
+            listPromptBuilder1.name("manuscript").message("With which page do you want to swap?");
             for (Page manu : manuscript.getPageList()) {
                 if (pageNumber != manu.getId()) {
-                    listPromptBuilder.newItem().text("Page: " + manu.getId()).add();
+                    System.out.println("hello");
+                    listPromptBuilder1.newItem(String.valueOf(manu.getId())).text("Page: " + manu.getId()).add();
                 }
-                listPromptBuilder.addPrompt();
-                HashMap<String, ? extends PromtResultItemIF> result2 = prompt.prompt(promptBuilder.build());
+            }
+                listPromptBuilder1.addPrompt();
+                HashMap<String, ? extends PromtResultItemIF> result2 = prompt1.prompt(promptBuilder1.build());
                 ListResult result1 = (ListResult) result2.get("manuscript");
 
                 int secondPage = Integer.parseInt(result1.getSelectedId());
                 ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
                 manuscriptAssistant.swapPage(manuscript, pageNumber, secondPage);
-            }
+
 
 
         }
