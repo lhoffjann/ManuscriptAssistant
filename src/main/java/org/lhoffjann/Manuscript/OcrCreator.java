@@ -56,14 +56,18 @@ public class OcrCreator {
                     System.out.format("Error: %s%n", res.getError().getMessage());
                     return;
                 }
-                try {
+                boolean b = res.getTextAnnotationsList().size() == 0;
+                if(b){
+                    try (PrintWriter out = new PrintWriter(faksimile.getOCRPath().toFile())) {
+                        out.println(0);
+                    }
+
+                }else{
                     EntityAnnotation annotation = res.getTextAnnotationsList().get(0);
 
                     try (PrintWriter out = new PrintWriter(faksimile.getOCRPath().toFile())) {
                         out.println(annotation.getDescription());
                     }
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
                 }
 
                 // For full list of available annotations, see http://g.co/cloud/vision/docs
