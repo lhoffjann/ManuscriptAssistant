@@ -58,7 +58,6 @@ public class PathHandler {
 
 
     public Path getFilePath(int orderNumber, FileType suffix, PageType pageType, ScanQuality scanQuality) {
-        System.out.println(scanQuality);
         if (suffix == FileType.JPG) {
             if (!jpgPath().toFile().exists()) {
                 jpgPath().toFile().mkdir();
