@@ -116,6 +116,7 @@ public class XMLCreator {
 
     public void createXML(Manuscript manuscript) throws IOException,JDOMException {
         prepareOCR(manuscript);
+
         SAXBuilder sax = new SAXBuilder();
         Document doc = sax.build(new File("src/main/resources/MS_transcript.xml"));
         Element rootNode = doc.getRootElement();
