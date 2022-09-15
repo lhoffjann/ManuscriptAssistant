@@ -1,12 +1,13 @@
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/ManuscriptReviewer.java
-/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/ManuscriptFactory.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/FaksimileFactory.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/ChecksumCalculator.java
+/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/ManuscriptFactory.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/FileType.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/FaksimileHandler.java
-/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/Main.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/XMLCreator.java
+/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/Main.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/Faksimile.java
+/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/PDFCreator.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/ManuscriptAssistant.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/Page.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/FileCreator.java
@@ -15,8 +16,8 @@
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/IssueDesc.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/FaksimileHelper.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/Manuscript.java
-/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/PageFactory.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/PathHandler.java
+/home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/PageFactory.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/FaksimileReviewer.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/GitlabAPI.java
 /home/lennart/IdeaProjects/ManuscriptAssistant/src/main/java/org/lhoffjann/Manuscript/OcrCreator.java

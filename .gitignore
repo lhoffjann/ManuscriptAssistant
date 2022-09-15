@@ -1,12 +1,12 @@
 # Environments
-.env
+target/.env
 .venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
-model-axe-341710-d5c6cbd89b49.json
+target/model-axe-341710-d5c6cbd89b49.json
 peak-sunset-351809-ed40f7fab817.json
 scanautomatisierung-17028416b9ec.json
 __pycache__

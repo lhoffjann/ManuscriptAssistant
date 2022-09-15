@@ -53,6 +53,8 @@ public class FileCreator {
         }
         public void createOCR(Faksimile faksimile) throws Exception {
             OcrCreator ocrCreator = new OcrCreator();
-            ocrCreator.createOCR(faksimile);
+            if (!faksimile.getOCRPath().toFile().exists()) {
+                ocrCreator.createOCR(faksimile);
+            }
         }
 }

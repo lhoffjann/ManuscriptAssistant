@@ -68,6 +68,16 @@ public class ManuscriptReviewer {
         if (completed == ConfirmChoice.ConfirmationValue.YES){
 
             ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
+            ProcessHandle
+                    .allProcesses()
+                    .filter(p -> p.info().commandLine().map(c -> c.contains("i_view32")).orElse(false))
+                    .findFirst()
+                    .ifPresent(ProcessHandle::destroy);
+            ProcessHandle
+                    .allProcesses()
+                    .filter(p -> p.info().commandLine().map(c -> c.contains("notepad")).orElse(false))
+                    .findFirst()
+                    .ifPresent(ProcessHandle::destroy);
             manuscriptAssistant.swapFrontAndBack(manuscript, pageNumber);
         }
 
@@ -100,7 +110,17 @@ public class ManuscriptReviewer {
 
                 int secondPage = Integer.parseInt(result1.getSelectedId());
                 ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
-                manuscriptAssistant.swapPage(manuscript, pageNumber, secondPage);
+                ProcessHandle
+                    .allProcesses()
+                    .filter(p -> p.info().commandLine().map(c -> c.contains("i_view32")).orElse(false))
+                    .findFirst()
+                    .ifPresent(ProcessHandle::destroy);
+                ProcessHandle
+                    .allProcesses()
+                    .filter(p -> p.info().commandLine().map(c -> c.contains("notepad")).orElse(false))
+                    .findFirst()
+                    .ifPresent(ProcessHandle::destroy);
+                manuscriptAssistant.swapPage(manuscript, pageNumber - 1, secondPage - 1);
 
 
 
@@ -130,6 +150,8 @@ public class ManuscriptReviewer {
             gitlabAPI.updateIssue(manuscript.getManuscriptID(), IssueDesc.ISSUE_REVIEWED);
             XMLCreator xmlCreator = new XMLCreator();
             xmlCreator.createXML(manuscript);
+            PDFCreator pdfCreator = new PDFCreator();
+            pdfCreator.createPDF(manuscript);
             ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
             manuscriptAssistant.copyTIFFsToMasterImage(manuscript);
         }else {

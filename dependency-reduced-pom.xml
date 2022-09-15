@@ -31,6 +31,7 @@
         </executions>
         <configuration>
           <transformers>
+            <transformer />
             <transformer>
               <resource>META-INF/services</resource>
               <file>io.grpc.LoadBalancerProvider</file>
