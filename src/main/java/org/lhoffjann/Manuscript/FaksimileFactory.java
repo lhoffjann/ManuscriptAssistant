@@ -54,7 +54,7 @@ public class FaksimileFactory {
 
         Path pathTif = pathHandler.getFilePath(orderNumber,FileType.TIF, pageParameter, scanQuality);
         Path pathJPG = pathHandler.getFilePath(orderNumber,FileType.JPG, pageParameter, scanQuality);
-        if(!pathTif.toFile().exists()){
+        if(!pathTif.toFile().exists() && path != null){
             FaksimileHelper faksimileHelper = new FaksimileHelper();
             faksimileHelper.renameFiles(path, pathTif);
         }
