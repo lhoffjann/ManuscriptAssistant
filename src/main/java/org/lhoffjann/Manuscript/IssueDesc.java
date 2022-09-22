@@ -4,11 +4,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public enum IssueDesc {
-        ISSUE_NEW("src/main/resources/Issue_new"),
-        ISSUE_SCANNED("src/main/resources/Issue_scanned"),
-        ISSUE_REVIEWED("src/main/resources/Issue_reviewed"),
-        ISSUE_REVIEWED_NE("src/main/resources/Issue_reviewed_NE"),
-        ISSUE_POSTPROCESSED("src/main/resources/Issue_postprocessed");
+        ISSUE_NEW("/Issue_new.txt"),
+        ISSUE_SCANNED("/Issue_scanned.txt"),
+        ISSUE_REVIEWED("/Issue_reviewed.txt"),
+        ISSUE_REVIEWED_NE("/Issue_reviewed_NE.txt"),
+        ISSUE_POSTPROCESSED("/Issue_postprocessed.txt");
 
 
         private String filepath;
@@ -17,7 +17,7 @@ public enum IssueDesc {
             this.filepath = filepath;
         }
 
-        public Path getFilepath() {
-            return Paths.get(filepath);
+        public String  getFilepath() {
+            return filepath;
         }
 }

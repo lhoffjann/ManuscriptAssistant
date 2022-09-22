@@ -1,4 +1,5 @@
 org/lhoffjann/Manuscript/FileCreator.class
+org/lhoffjann/Manuscript/ManuscriptSelector.class
 org/lhoffjann/Manuscript/FaksimileHelper.class
 org/lhoffjann/Manuscript/ManuscriptAssistant.class
 org/lhoffjann/Manuscript/PathHandler.class
@@ -6,7 +7,6 @@ org/lhoffjann/Manuscript/ManuscriptReviewer.class
 org/lhoffjann/Manuscript/PDFCreator.class
 org/lhoffjann/Manuscript/Faksimile.class
 org/lhoffjann/Manuscript/OcrCreator.class
-org/lhoffjann/Manuscript/ScanQuality.class
 org/lhoffjann/Manuscript/XMLCreator.class
 org/lhoffjann/Manuscript/ScanQuality.class
 org/lhoffjann/Manuscript/FileType.class

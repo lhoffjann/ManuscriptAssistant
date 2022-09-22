@@ -16,128 +16,99 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ManuscriptReviewer {
-    public List<String> getManuscriptList(){
-        PathHandler pathHandler = new PathHandler();
-        File baseFolder = new File(pathHandler.getBasePath().toString());
-        List<String> manuscripts = Arrays.stream(baseFolder.list()).sorted().toList();
-        return manuscripts;
-    }
-    private String selectManuscript(){
-        String resultString = "";
-        try {
-            ConsolePrompt prompt = new ConsolePrompt();                     // #2
-            PromptBuilder promptBuilder = prompt.getPromptBuilder();        // #3
-            ListPromptBuilder listPromptBuilder = promptBuilder.createListPrompt();
-            listPromptBuilder.name("manuscript").message("What manuscript do you want to review?");
-            for (String manuscript: getManuscriptList()){
-                listPromptBuilder.newItem().text(manuscript).add();
-            }
-            listPromptBuilder.addPrompt();
-            HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build());
-            ListResult result1 = (ListResult) result.get("manuscript");
-            System.out.println(result1.getSelectedId());
-            resultString = result1.getSelectedId();
-            return resultString;
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                TerminalFactory.get().restore();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return resultString;
-    }
     private void reviewFaksimile(Faksimile faksimile) throws IOException {
         FaksimileReviewer faksimileReviewer = new FaksimileReviewer();
         faksimileReviewer.reviewFaksimile(faksimile);
 
+
     }
-    private void swapFaksimile(Manuscript manuscript, int pageNumber) throws Exception {
+    public void swapFaksimileOrPages(Manuscript manuscript) throws Exception {
         ConsolePrompt prompt = new ConsolePrompt();                     // #2
         PromptBuilder promptBuilder = prompt.getPromptBuilder();        // #3
-        ConfirmChoice.ConfirmationValue completed;
-        promptBuilder.createConfirmPromp().name("pagetype")
-                .message("Do you want to swap front and back?")
-                .defaultValue(ConfirmChoice.ConfirmationValue.NO)
-                .addPrompt();
-        HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build());
-        completed = ((ConfirmResult) result.get("pagetype")).getConfirmed();
-        if (completed == ConfirmChoice.ConfirmationValue.YES){
 
-            ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
-            ProcessHandle
-                    .allProcesses()
-                    .filter(p -> p.info().commandLine().map(c -> c.contains("i_view32")).orElse(false))
-                    .findFirst()
-                    .ifPresent(ProcessHandle::destroy);
-            ProcessHandle
-                    .allProcesses()
-                    .filter(p -> p.info().commandLine().map(c -> c.contains("notepad")).orElse(false))
-                    .findFirst()
-                    .ifPresent(ProcessHandle::destroy);
-            manuscriptAssistant.swapFrontAndBack(manuscript, pageNumber);
+        promptBuilder.createListPrompt()                                // #4
+                .name("action")
+                .message("What do you want to do?")
+                .newItem("faksimile").text("swap the front and back of a faksimile").add()  // without name (name defaults to text)
+                .newItem("pages").text("swap two Pages").add()
+                .addPrompt();
+
+        HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build()); // #5
+        ListResult result1 = (ListResult) result.get("action");
+        System.out.println(result1.getSelectedId());
+        if(result1.getSelectedId() == "faksimile"){
+            swapFaksimile(manuscript);
+
+        } else if (result1.getSelectedId() == "pages") {
+            swapPages(manuscript);
+
         }
 
+    }
+
+    private void swapFaksimile(Manuscript manuscript) throws Exception {
+        ConsolePrompt prompt1 = new ConsolePrompt();                     // #2
+        PromptBuilder promptBuilder1 = prompt1.getPromptBuilder();        // #3
+        ListPromptBuilder listPromptBuilder1 = promptBuilder1.createListPrompt();
+        listPromptBuilder1.name("manuscript").message("Which page do you want to swap the front and back?");
+        for (Page manu : manuscript.getPageList()) {
+            listPromptBuilder1.newItem(String.valueOf(manu.getId())).text("Page: " + manu.getId()).add();
+        }
+        listPromptBuilder1.addPrompt();
+        HashMap<String, ? extends PromtResultItemIF> result2 = prompt1.prompt(promptBuilder1.build());
+        ListResult result1 = (ListResult) result2.get("manuscript");
+
+        int Page = Integer.parseInt(result1.getSelectedId());
+        ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
+        manuscriptAssistant.swapFrontAndBack(manuscript, Page);
+
 
     }
-    public void swapPages(Manuscript manuscript,int pageNumber) throws Exception {
-        ConsolePrompt prompt = new ConsolePrompt();                     // #2
-        PromptBuilder promptBuilder = prompt.getPromptBuilder();        // #3
-        ConfirmChoice.ConfirmationValue completed;
-        promptBuilder.createConfirmPromp().name("pagetype")
-                .message("Do you want to swap this Page with another one?")
-                .defaultValue(ConfirmChoice.ConfirmationValue.NO)
-                .addPrompt();
-        HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build());
-        completed = ((ConfirmResult) result.get("pagetype")).getConfirmed();
-        if (completed == ConfirmChoice.ConfirmationValue.YES){
-            ConsolePrompt prompt1 = new ConsolePrompt();                     // #2
-            PromptBuilder promptBuilder1 = prompt1.getPromptBuilder();        // #3
-            ListPromptBuilder listPromptBuilder1 = promptBuilder1.createListPrompt();
-            listPromptBuilder1.name("manuscript").message("With which page do you want to swap?");
-            for (Page manu : manuscript.getPageList()) {
-                if (pageNumber != manu.getId()) {
-                    System.out.println("hello");
-                    listPromptBuilder1.newItem(String.valueOf(manu.getId())).text("Page: " + manu.getId()).add();
-                }
+
+    public void swapPages(Manuscript manuscript) throws Exception {
+
+        ConsolePrompt prompt1 = new ConsolePrompt();                     // #2
+        PromptBuilder promptBuilder1 = prompt1.getPromptBuilder();        // #3
+        ListPromptBuilder listPromptBuilder1 = promptBuilder1.createListPrompt();
+        listPromptBuilder1.name("manuscript").message("Which page do you want to swap?");
+        for (Page manu : manuscript.getPageList()) {
+                listPromptBuilder1.newItem(String.valueOf(manu.getId())).text("Page: " + manu.getId()).add();
+        }
+        listPromptBuilder1.addPrompt();
+        HashMap<String, ? extends PromtResultItemIF> result2 = prompt1.prompt(promptBuilder1.build());
+        ListResult result1 = (ListResult) result2.get("manuscript");
+        int firstPage = Integer.parseInt(result1.getSelectedId());
+
+        ConsolePrompt prompt2 = new ConsolePrompt();                     // #2
+        PromptBuilder promptBuilder2 = prompt2.getPromptBuilder();        // #3
+        ListPromptBuilder listPromptBuilder2 = promptBuilder2.createListPrompt();
+        listPromptBuilder2.name("manuscript").message("With which page do you want to swap?");
+        for (Page manu : manuscript.getPageList()) {
+            if (firstPage != manu.getId()) {
+                listPromptBuilder2.newItem(String.valueOf(manu.getId())).text("Page: " + manu.getId()).add();
             }
-                listPromptBuilder1.addPrompt();
-                HashMap<String, ? extends PromtResultItemIF> result2 = prompt1.prompt(promptBuilder1.build());
-                ListResult result1 = (ListResult) result2.get("manuscript");
-
-                int secondPage = Integer.parseInt(result1.getSelectedId());
-                ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
-                ProcessHandle
-                    .allProcesses()
-                    .filter(p -> p.info().commandLine().map(c -> c.contains("i_view32")).orElse(false))
-                    .findFirst()
-                    .ifPresent(ProcessHandle::destroy);
-                ProcessHandle
-                    .allProcesses()
-                    .filter(p -> p.info().commandLine().map(c -> c.contains("notepad")).orElse(false))
-                    .findFirst()
-                    .ifPresent(ProcessHandle::destroy);
-                manuscriptAssistant.swapPage(manuscript, pageNumber - 1, secondPage - 1);
-
-
-
         }
+        listPromptBuilder2.addPrompt();
+        HashMap<String, ? extends PromtResultItemIF> result3 = prompt2.prompt(promptBuilder2.build());
+        ListResult result4 = (ListResult) result3.get("manuscript");
+
+        int secondPage = Integer.parseInt(result4.getSelectedId());
+        ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
+        System.out.println(firstPage);
+        System.out.println(secondPage);
+        manuscriptAssistant.swapPage(manuscript, firstPage - 1, secondPage - 1);
+
 
     }
 
 
-    public void startReviewing() throws Exception {
-        String manuscriptID = selectManuscript();
-        ManuscriptFactory manuscriptFactory = new ManuscriptFactory();
-        Manuscript manuscript = manuscriptFactory.createManuscript(manuscriptID);
+
+
+    public void startReviewing(Manuscript manuscript) throws Exception {
         for(Page page : manuscript.getPageList()){
             reviewFaksimile(page.getFront());
             reviewFaksimile(page.getBack());
-            swapFaksimile(manuscript, page.getId());
-            swapPages(manuscript, page.getId());
         }
         boolean manuscriptOK = true;
         for(Page page : manuscript.getPageList()){
@@ -154,7 +125,7 @@ public class ManuscriptReviewer {
             pdfCreator.createPDF(manuscript);
             ManuscriptAssistant manuscriptAssistant = new ManuscriptAssistant();
             manuscriptAssistant.copyTIFFsToMasterImage(manuscript);
-        }else {
+        } else {
             gitlabAPI.updateIssue(manuscript.getManuscriptID(), IssueDesc.ISSUE_REVIEWED_NE);
         }
 

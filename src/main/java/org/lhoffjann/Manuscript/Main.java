@@ -14,6 +14,14 @@ import java.util.HashMap;
 import static org.fusesource.jansi.Ansi.ansi;
 
 public class Main {
+    private static Manuscript getManuscript() throws Exception {
+        ManuscriptSelector manuscriptSelector = new ManuscriptSelector();
+        String manuscriptID = manuscriptSelector.selectManuscript();
+        ManuscriptFactory manuscriptFactory = new ManuscriptFactory();
+        Manuscript manuscript = manuscriptFactory.createManuscript(manuscriptID);
+        return manuscript;
+
+    }
     public static void main(String[] args) {
         AnsiConsole.systemInstall();                                      // #1
         System.out.println(ansi().eraseScreen().render("Simple list example:"));
@@ -26,7 +34,10 @@ public class Main {
                     .name("action")
                     .message("What do you want to do?")
                     .newItem("review").text("Review manuscript").add()  // without name (name defaults to text)
-                    .newItem("scan").text("scan manuscript").add()
+                    .newItem("XML").text("generate XML").add()
+                    .newItem("PDF").text("generate PDF").add()
+                    .newItem("Switch").text("switch Pages").add()
+                    .newItem("GitlabIssue").text("Create/Update Gitlab Issue").add()
                     .addPrompt();
 
             HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build()); // #5
@@ -34,7 +45,23 @@ public class Main {
             System.out.println(result1.getSelectedId());
             if(result1.getSelectedId() == "review"){
                 ManuscriptReviewer manuscriptReviewer = new ManuscriptReviewer();
-                manuscriptReviewer.startReviewing();
+                manuscriptReviewer.startReviewing(getManuscript());
+
+            } else if (result1.getSelectedId() == "XML") {
+                XMLCreator xmlCreator = new XMLCreator();
+                xmlCreator.createXML(getManuscript());
+
+            }else if (result1.getSelectedId() == "PDF") {
+                PDFCreator pdfCreator = new PDFCreator();
+                pdfCreator.createPDF(getManuscript());
+
+            }else if (result1.getSelectedId() == "Switch") {
+                ManuscriptReviewer manuscriptReviewer = new ManuscriptReviewer();
+                manuscriptReviewer.swapFaksimileOrPages(getManuscript());
+
+            }else if (result1.getSelectedId() == "GitlabIssue") {
+                GitlabAPI gitlabAPI= new GitlabAPI();
+                gitlabAPI.selectUpdate(getManuscript().getManuscriptID());
 
             }
 

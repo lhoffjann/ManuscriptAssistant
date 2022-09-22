@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.logging.FileHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.BufferedInputStream;
@@ -50,8 +51,13 @@ public class FaksimileFactory {
         FileCreator fileCreator = new FileCreator();
         PageType pageParameter = identifyPageType(path, orderNumber);
         ScanQuality scanQuality = checkScanQuality(path);
+
         Path pathTif = pathHandler.getFilePath(orderNumber,FileType.TIF, pageParameter, scanQuality);
         Path pathJPG = pathHandler.getFilePath(orderNumber,FileType.JPG, pageParameter, scanQuality);
+        if(!pathTif.toFile().exists()){
+            FaksimileHelper faksimileHelper = new FaksimileHelper();
+            faksimileHelper.renameFiles(path, pathTif);
+        }
         String uniqueIdentifier = null;
         if(pathTif.toFile().exists()){
             if(!pathJPG.toFile().exists()){

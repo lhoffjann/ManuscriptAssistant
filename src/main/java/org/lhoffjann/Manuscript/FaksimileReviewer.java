@@ -15,7 +15,7 @@ public class FaksimileReviewer {
         openFilesForReview(faksimile);
         checkPageType(faksimile);
         checkScanQuality(faksimile);
-        checkOCR(faksimile);
+        //checkOCR(faksimile);
     }
 
     private void checkScanQuality(Faksimile faksimile){

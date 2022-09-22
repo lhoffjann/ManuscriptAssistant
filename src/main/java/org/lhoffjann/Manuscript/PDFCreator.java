@@ -16,8 +16,8 @@ public class PDFCreator {
 
         // Setting the destination file path
         Dotenv dotenv = Dotenv.load();
-        System.out.println(Path.of(dotenv.get("path_pdf_folder"), manuscript.getManuscriptID()).toString() + ".pdf");
-        obj.setDestinationFileName(Path.of(dotenv.get("path_pdf_folder"), manuscript.getManuscriptID()).toString() + ".pdf");
+        System.out.println(Path.of(dotenv.get("path_pdf_folder"), manuscript.getManuscriptID())+ ".pdf");
+        obj.setDestinationFileName(Path.of(dotenv.get("path_pdf_folder"), manuscript.getManuscriptID()) + ".pdf");
 
         // Add all source files, to be merged
         for(Page page: manuscript.getPageList()){

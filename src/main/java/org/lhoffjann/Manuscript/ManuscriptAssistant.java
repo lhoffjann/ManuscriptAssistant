@@ -58,12 +58,17 @@ public class ManuscriptAssistant {
     }
 
     private void swapFiles(File file1, File file2) throws Exception {
+        System.out.println(file1.toPath());
+        System.out.println(file2.toPath());
         if(file1.exists() && file2.exists()) {
             ChecksumCalculator checksumCalculator = new ChecksumCalculator();
-            File file1storage = new File(file1.getParent() +
+            System.out.println(file1.getParent() + "/"+
                     FilenameUtils.getBaseName(file1.getName()) + "storage." +
                     FilenameUtils.getExtension(file1.getName()));
-            File file2storage = new File(file2.getParent() +
+            File file1storage = new File(file1.getParent() + "/"+
+                    FilenameUtils.getBaseName(file1.getName()) + "storage." +
+                    FilenameUtils.getExtension(file1.getName()));
+            File file2storage = new File(file2.getParent() + "/"+
                     FilenameUtils.getBaseName(file2.getName()) + "storage." +
                     FilenameUtils.getExtension(file2.getName()));
             Files.move(file1.toPath(), file1storage.toPath());

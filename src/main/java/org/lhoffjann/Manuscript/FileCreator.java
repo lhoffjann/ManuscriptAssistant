@@ -18,9 +18,8 @@ import com.itextpdf.text.Image;
 
 public class FileCreator {
 
-        public void createJPG(Faksimile faksimile) throws IOException {
+    public void createJPG(Faksimile faksimile) throws IOException {
             BufferedImage image = ImageIO.read(faksimile.getTIFPath().toFile());//Or image.jpg or image.tiff, etc.
-            String[] formatNames = ImageIO.getWriterFormatNames();
             ImageIO.write(image, "jpg", faksimile.getJPGPath().toFile());
         }
     public void createJPG(Path pathTif, Path pathJPG) throws IOException {
@@ -30,7 +29,7 @@ public class FileCreator {
         
 
         public void createPDF(Faksimile faksimile){
-            Document document = new Document();
+            Document document = new Document( PageSize.A4,0, 0, 0, 0);
             String input = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
             String output = faksimile.getPDFPath().toString();
 
@@ -39,8 +38,9 @@ public class FileCreator {
                 PdfWriter writer = PdfWriter.getInstance(document, fos);
                 writer.open();
                 document.open();
+                document.setMargins(0,0,0,0);
                 Image image = Image.getInstance(input);
-                float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
+               float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
                         - document.rightMargin()) / image.getWidth()) * 100;
                 image.scalePercent(scaler);
                 document.add(image);
