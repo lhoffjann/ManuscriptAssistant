@@ -12,9 +12,11 @@ import java.util.HashMap;
 
 public class FaksimileReviewer {
     public void reviewFaksimile(Faksimile faksimile) throws IOException {
-        openFilesForReview(faksimile);
-        checkPageType(faksimile);
-        checkScanQuality(faksimile);
+        if(faksimile.getTIFPath().toFile().exists()) {
+            openFilesForReview(faksimile);
+            checkPageType(faksimile);
+            checkScanQuality(faksimile);
+        }
         //checkOCR(faksimile);
     }
 
