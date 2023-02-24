@@ -1,12 +1,15 @@
 package org.lhoffjann.Manuscript;
 
 import io.github.cdimascio.dotenv.Dotenv;
+import org.lhoffjann.Manuscript.enums.FileType;
+import org.lhoffjann.Manuscript.enums.PageType;
+import org.lhoffjann.Manuscript.enums.ScanQuality;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class PathHandler {
-    private Path basePath;
+    final private Path basePath;
     private Path manuscriptPath;
     private Path masterImages;
 
@@ -49,7 +52,7 @@ public class PathHandler {
         return manuscriptPath;
     }
 
-    public Path getMasterImagesFilePath(int orderNumber,PageType pageType){
+    public Path getMasterImagesFilePath(int orderNumber, PageType pageType){
         if (!getMasterImagesPath().toFile().exists()) {
             getMasterImagesPath().toFile().mkdir();
         }

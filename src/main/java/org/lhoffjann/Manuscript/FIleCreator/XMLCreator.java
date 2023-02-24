@@ -1,22 +1,23 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.FIleCreator;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.commons.io.FilenameUtils;
 import org.jdom2.*;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
+import org.lhoffjann.Manuscript.Faksimile.Faksimile;
+import org.lhoffjann.Manuscript.Manuscript.Manuscript;
+import org.lhoffjann.Manuscript.Page.Page;
+import org.lhoffjann.Manuscript.enums.PageType;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class XMLCreator {
-    private List<String> ocrContent = new ArrayList<>();
+    final private List<String> ocrContent = new ArrayList<>();
     private void readOCRFile(Faksimile faksimile) throws IOException {
         if (faksimile.getOCRPath().toFile().exists()) {
             final BufferedReader br = new BufferedReader(new FileReader(faksimile.getOCRPath().toFile()));
@@ -30,9 +31,8 @@ public class XMLCreator {
         }
     }
 
-    public String addPageBreaks(Faksimile faksimile) {
-        String pageBreak = "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" +faksimile.getTIFPath().getFileName()+ "\"/>";
-        return pageBreak;
+    private String addPageBreaks(Faksimile faksimile) {
+        return "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" +faksimile.getTIFPath().getFileName()+ "\"/>";
     }
 
     public String addLineBreaks(String line) {
@@ -75,33 +75,28 @@ public class XMLCreator {
         int openingParagraph = 0;
         int closingParagraph = 0;
         int bothParagraphs = 0;
-        if (emptyLines != null){
-            int NumberOfEmptyLines = emptyLines.size();
+        int NumberOfEmptyLines = emptyLines.size();
 
-            Pattern pattern = Pattern.compile("<pb ", Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile("<pb ", Pattern.CASE_INSENSITIVE);
 
-            while (emptyLines.size() > 0) {
-                //System.out.println("hello");
-                //System.out.println(ocrContent.get(emptyLines.get(0) + 1));
-                //System.out.println(ocrContent.get(emptyLines.get(0) - 1));
-                if (emptyLines.size() == NumberOfEmptyLines) {
-                    ocrContent.set(emptyLines.remove(0), "<p>");
-                    openingParagraph++;
-                } else if (pattern.matcher(ocrContent.get(emptyLines.get(0) + 1)).find()) {
-                    ocrContent.set(emptyLines.remove(0), "</p>");
-                    closingParagraph++;
-                } else if (pattern.matcher(ocrContent.get(emptyLines.get(0) - 1)).find()) {
-                    ocrContent.set(emptyLines.remove(0), "<p>");
-                    openingParagraph++;
-                } else {
-                    ocrContent.set(emptyLines.remove(0), "</p><p>");
-                    bothParagraphs++;
-                }
-
-
+        while (emptyLines.size() > 0) {
+            if (emptyLines.size() == NumberOfEmptyLines) {
+                ocrContent.set(emptyLines.remove(0), "<p>");
+                openingParagraph++;
+            } else if (pattern.matcher(ocrContent.get(emptyLines.get(0) + 1)).find()) {
+                ocrContent.set(emptyLines.remove(0), "</p>");
+                closingParagraph++;
+            } else if (pattern.matcher(ocrContent.get(emptyLines.get(0) - 1)).find()) {
+                ocrContent.set(emptyLines.remove(0), "<p>");
+                openingParagraph++;
+            } else {
+                ocrContent.set(emptyLines.remove(0), "</p><p>");
+                bothParagraphs++;
             }
 
+
         }
+
         System.out.println(openingParagraph);
         System.out.println(closingParagraph);
         System.out.println(bothParagraphs);
@@ -120,7 +115,6 @@ public class XMLCreator {
         SAXBuilder sax = new SAXBuilder();
         Document doc = sax.build(getClass().getResourceAsStream("/MS_transcript.xml"));
         Element rootNode = doc.getRootElement();
-        Element teiHeaderNode= rootNode.getChild("teiHeader", Namespace.getNamespace("http://www.tei-c.org/ns/1.0"));
         Element facsimileNode = rootNode.getChild("facsimile", Namespace.getNamespace("http://www.tei-c.org/ns/1.0"));
         Element textNode = rootNode.getChild("text", Namespace.getNamespace("http://www.tei-c.org/ns/1.0"));
         Element bodyNode = textNode.getChild("body", Namespace.getNamespace("http://www.tei-c.org/ns/1.0"));
@@ -160,7 +154,7 @@ public class XMLCreator {
         Dotenv dotenv = Dotenv.load();
 
         try (FileOutputStream output =
-                     new FileOutputStream(Path.of(dotenv.get("path_xml_folder") , manuscript.getManuscriptID()).toString()+ ".xml")) {
+                     new FileOutputStream(Path.of(dotenv.get("path_xml_folder") , manuscript.getManuscriptID())+ ".xml")) {
             xmlOutput.output(doc, output);
             System.out.println("XML created");
         }

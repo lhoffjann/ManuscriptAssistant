@@ -1,11 +1,12 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.FIleCreator;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.multipdf.PDFMergerUtility;
+import org.lhoffjann.Manuscript.Manuscript.Manuscript;
+import org.lhoffjann.Manuscript.Page.Page;
+import org.lhoffjann.Manuscript.enums.PageType;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 

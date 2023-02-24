@@ -1,19 +1,21 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Manuscript;
 
-import de.codeshelf.consoleui.elements.ConfirmChoice;
-import de.codeshelf.consoleui.prompt.ConfirmResult;
 import de.codeshelf.consoleui.prompt.ConsolePrompt;
 import de.codeshelf.consoleui.prompt.ListResult;
 import de.codeshelf.consoleui.prompt.PromtResultItemIF;
 import de.codeshelf.consoleui.prompt.builder.ListPromptBuilder;
 import de.codeshelf.consoleui.prompt.builder.PromptBuilder;
-import jline.TerminalFactory;
+import org.lhoffjann.Manuscript.Faksimile.Faksimile;
+import org.lhoffjann.Manuscript.Faksimile.FaksimileReviewer;
+import org.lhoffjann.Manuscript.GitlabAPI;
+import org.lhoffjann.Manuscript.FIleCreator.PDFCreator;
+import org.lhoffjann.Manuscript.Page.Page;
+import org.lhoffjann.Manuscript.FIleCreator.XMLCreator;
+import org.lhoffjann.Manuscript.enums.IssueDesc;
+import org.lhoffjann.Manuscript.enums.ScanQuality;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class ManuscriptReviewer {
 
@@ -37,10 +39,10 @@ public class ManuscriptReviewer {
         HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build()); // #5
         ListResult result1 = (ListResult) result.get("action");
         System.out.println(result1.getSelectedId());
-        if(result1.getSelectedId() == "faksimile"){
+        if(result1.getSelectedId().equals( "faksimile")){
             swapFaksimile(manuscript);
 
-        } else if (result1.getSelectedId() == "pages") {
+        } else if (result1.getSelectedId().equals("pages")) {
             swapPages(manuscript);
 
         }
@@ -112,11 +114,12 @@ public class ManuscriptReviewer {
         }
         boolean manuscriptOK = true;
         for(Page page : manuscript.getPageList()){
-            if (page.getFront().getScanQuality() == ScanQuality.BAD || page.getBack().getScanQuality() == ScanQuality.BAD){
+            if (page.getFront().getScanQuality() == ScanQuality.BAD || page.getBack().getScanQuality() == ScanQuality.BAD) {
                 manuscriptOK = false;
+                break;
             }
         }
-        GitlabAPI gitlabAPI= new GitlabAPI();
+        GitlabAPI gitlabAPI = new GitlabAPI();
         if(manuscriptOK){
             gitlabAPI.updateIssue(manuscript.getManuscriptID(), IssueDesc.ISSUE_REVIEWED);
             XMLCreator xmlCreator = new XMLCreator();

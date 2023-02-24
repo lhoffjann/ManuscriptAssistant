@@ -1,4 +1,4 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.enums;
 
 public enum PageType {
     FRONT ("V", "vorderseite", "content", 'q'),

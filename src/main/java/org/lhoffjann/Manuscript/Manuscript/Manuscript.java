@@ -1,9 +1,10 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Manuscript;
+import org.lhoffjann.Manuscript.Page.Page;
+import org.lhoffjann.Manuscript.PathHandler;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 public class Manuscript{
     private  final String manuscriptID;
     private List<Page> pages = new ArrayList<>();

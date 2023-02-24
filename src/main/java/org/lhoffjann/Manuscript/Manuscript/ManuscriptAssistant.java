@@ -1,4 +1,4 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Manuscript;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FilenameUtils;
+import org.lhoffjann.Manuscript.Faksimile.Faksimile;
+import org.lhoffjann.Manuscript.Faksimile.FaksimileHandler;
+import org.lhoffjann.Manuscript.Page.Page;
+
 public class ManuscriptAssistant {
     public void copyFaksimileToMasterImages(Path scan, Path masterImage) throws IOException {
         if (scan.toFile().exists()) {
@@ -51,7 +55,7 @@ public class ManuscriptAssistant {
         return new FaksimileHandler(faksimile1, faksimile2);
     }
 
-    private Faksimile swapValues(Faksimile oldFaksimile, Faksimile newFaksimile) throws IOException {
+    private Faksimile swapValues(Faksimile oldFaksimile, Faksimile newFaksimile){
         newFaksimile.setOrderNumber(oldFaksimile.getOrderNumber());
         newFaksimile.setPageParameter(oldFaksimile.getPageParameter());
         return newFaksimile;
@@ -61,7 +65,6 @@ public class ManuscriptAssistant {
         System.out.println(file1.toPath());
         System.out.println(file2.toPath());
         if(file1.exists() && file2.exists()) {
-            ChecksumCalculator checksumCalculator = new ChecksumCalculator();
             System.out.println(file1.getParent() + "/"+
                     FilenameUtils.getBaseName(file1.getName()) + "storage." +
                     FilenameUtils.getExtension(file1.getName()));

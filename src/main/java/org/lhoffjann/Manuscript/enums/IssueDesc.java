@@ -1,7 +1,4 @@
-package org.lhoffjann.Manuscript;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+package org.lhoffjann.Manuscript.enums;
 
 public enum IssueDesc {
         ISSUE_NEW("/Issue_new.txt"),
@@ -11,9 +8,8 @@ public enum IssueDesc {
         ISSUE_POSTPROCESSED("/Issue_postprocessed.txt");
 
 
-        private String filepath;
-
-        private IssueDesc(String filepath) {
+        final private String filepath;
+        IssueDesc(String filepath) {
             this.filepath = filepath;
         }
 

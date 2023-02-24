@@ -1,4 +1,4 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Manuscript;
 
 import de.codeshelf.consoleui.prompt.ConsolePrompt;
 import de.codeshelf.consoleui.prompt.ListResult;
@@ -6,19 +6,20 @@ import de.codeshelf.consoleui.prompt.PromtResultItemIF;
 import de.codeshelf.consoleui.prompt.builder.ListPromptBuilder;
 import de.codeshelf.consoleui.prompt.builder.PromptBuilder;
 import jline.TerminalFactory;
+import org.lhoffjann.Manuscript.PathHandler;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class ManuscriptSelector {
     private List<String> getManuscriptList(){
         PathHandler pathHandler = new PathHandler();
         File baseFolder = new File(pathHandler.getBasePath().toString());
-        List<String> manuscripts = Arrays.stream(baseFolder.list()).sorted().toList();
-        return manuscripts;
+        return Arrays.stream(Objects.requireNonNull(baseFolder.list())).sorted().toList();
     }
     public String selectManuscript(){
         String resultString = "";
