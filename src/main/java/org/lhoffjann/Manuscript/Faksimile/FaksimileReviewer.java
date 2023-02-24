@@ -1,11 +1,12 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Faksimile;
 
 import de.codeshelf.consoleui.elements.ConfirmChoice;
 import de.codeshelf.consoleui.prompt.*;
 import de.codeshelf.consoleui.prompt.builder.ListPromptBuilder;
 import de.codeshelf.consoleui.prompt.builder.PromptBuilder;
 import jline.TerminalFactory;
-
+import org.lhoffjann.Manuscript.enums.PageType;
+import org.lhoffjann.Manuscript.enums.ScanQuality;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,14 +18,12 @@ public class FaksimileReviewer {
             checkPageType(faksimile);
             checkScanQuality(faksimile);
         }
-        //checkOCR(faksimile);
     }
 
     private void checkScanQuality(Faksimile faksimile){
         try {
             ConsolePrompt prompt = new ConsolePrompt();                     // #2
             PromptBuilder promptBuilder = prompt.getPromptBuilder();        // #3
-
             promptBuilder.createConfirmPromp().name("scanQuality")
                     .message("Is the scan good?")
                     .defaultValue(ConfirmChoice.ConfirmationValue.YES)
@@ -53,37 +52,17 @@ public class FaksimileReviewer {
     }
 
     private void checkPageType(Faksimile faksimile){
-
         try {
             ConsolePrompt prompt = new ConsolePrompt();                     // #2
             PromptBuilder promptBuilder = prompt.getPromptBuilder();        // #3
-            ConfirmChoice.ConfirmationValue completed = ConfirmChoice.ConfirmationValue.NO;
+            ConfirmChoice.ConfirmationValue completed;
             promptBuilder.createConfirmPromp().name("pagetype")
                     .message("Is " + faksimile.getPageParameter().name() + " the right page type?")
                     .defaultValue(ConfirmChoice.ConfirmationValue.YES)
                     .addPrompt();
             HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build());
             completed = ((ConfirmResult) result.get("pagetype")).getConfirmed();
-            if (completed ==  ConfirmChoice.ConfirmationValue.NO){
-
-                ConsolePrompt prompt1 = new ConsolePrompt();                     // #2
-                PromptBuilder promptBuilder1 = prompt1.getPromptBuilder();        // #3
-                ListPromptBuilder listPromptBuilder = promptBuilder1.createListPrompt();
-                listPromptBuilder.name("pagetype").message("Which is the right one?");
-                for (PageType pageType: PageType.values()){
-                    listPromptBuilder.newItem().text(pageType.name()).add();
-                }
-                listPromptBuilder.addPrompt();
-                HashMap<String, ? extends PromtResultItemIF> result1 = prompt1.prompt(promptBuilder1.build());
-                ListResult result2 = (ListResult) result1.get("pagetype");
-                for (PageType pageType: PageType.values()){
-                    if (pageType.name() == result2.getSelectedId()){
-                        System.out.println(result2.getSelectedId());
-                        faksimile.changePageParameter(pageType);
-                    }
-                }
-
-            }
+            if (completed == ConfirmChoice.ConfirmationValue.NO) selectPageType(faksimile);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -94,6 +73,26 @@ public class FaksimileReviewer {
             }
         }
     }
+
+    private static void selectPageType(Faksimile faksimile) throws IOException {
+        ConsolePrompt prompt1 = new ConsolePrompt();                     // #2
+        PromptBuilder promptBuilder1 = prompt1.getPromptBuilder();        // #3
+        ListPromptBuilder listPromptBuilder = promptBuilder1.createListPrompt();
+        listPromptBuilder.name("pagetype").message("Which is the right one?");
+        for (PageType pageType: PageType.values()){
+            listPromptBuilder.newItem().text(pageType.name()).add();
+        }
+        listPromptBuilder.addPrompt();
+        HashMap<String, ? extends PromtResultItemIF> result1 = prompt1.prompt(promptBuilder1.build());
+        ListResult result2 = (ListResult) result1.get("pagetype");
+        for (PageType pageType: PageType.values()){
+            if (pageType.name().equals(result2.getSelectedId())){
+                System.out.println(result2.getSelectedId());
+                faksimile.changePageParameter(pageType);
+            }
+        }
+    }
+
     private void openFilesForReview(Faksimile faksimile) throws IOException {
         if(faksimile.getOCRPath()!=null){
             Desktop.getDesktop().open(faksimile.getOCRPath().toFile());

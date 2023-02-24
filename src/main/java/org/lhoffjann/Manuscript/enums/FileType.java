@@ -1,8 +1,8 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.enums;
 
 public enum FileType {
     JPG,
     PDF,
     TXT,
-    TIF;
+    TIF
 }

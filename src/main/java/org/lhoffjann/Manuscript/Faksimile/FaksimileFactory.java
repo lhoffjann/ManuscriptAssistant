@@ -1,18 +1,18 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Faksimile;
 
-import java.io.FileInputStream;
+import org.lhoffjann.Manuscript.ChecksumCalculator;
+import org.lhoffjann.Manuscript.FIleCreator.FileCreator;
+import org.lhoffjann.Manuscript.PathHandler;
+import org.lhoffjann.Manuscript.enums.FileType;
+import org.lhoffjann.Manuscript.enums.PageType;
+import org.lhoffjann.Manuscript.enums.ScanQuality;
+
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.logging.FileHandler;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.BufferedInputStream;
 
 
 public class FaksimileFactory {
-
     private ScanQuality checkScanQuality(Path path){
         if(path == null){
             return null;
@@ -22,12 +22,10 @@ public class FaksimileFactory {
         boolean matchFound = matcher.find();
         if (matchFound){
             return ScanQuality.BAD;
-
         }
     return ScanQuality.GOOD;
     }
     private PageType identifyPageType(Path path, int orderNumber){
-
         if (path == null){
             return PageType.BACK_EMPTY;
         }
@@ -39,7 +37,6 @@ public class FaksimileFactory {
                 return pageParameter;
             }
         }
-        // if there is no pageParameter set, it gets set by the orderNumber
         if(orderNumber%2 == 0){
             return PageType.BACK_EMPTY;
         }else{
@@ -48,40 +45,34 @@ public class FaksimileFactory {
     }
     public Faksimile createFaksimile(Path path, int orderNumber, PathHandler pathHandler) throws Exception {
         ChecksumCalculator checksumCalculator = new ChecksumCalculator();
-        FileCreator fileCreator = new FileCreator();
         PageType pageParameter = identifyPageType(path, orderNumber);
         ScanQuality scanQuality = checkScanQuality(path);
-
-        Path pathTif = pathHandler.getFilePath(orderNumber,FileType.TIF, pageParameter, scanQuality);
+        Path pathTif = pathHandler.getFilePath(orderNumber, FileType.TIF, pageParameter, scanQuality);
         Path pathJPG = pathHandler.getFilePath(orderNumber,FileType.JPG, pageParameter, scanQuality);
         if(!pathTif.toFile().exists() && path != null){
-            FaksimileHelper faksimileHelper = new FaksimileHelper();
-            faksimileHelper.renameFiles(path, pathTif);
+            FaksimileHelper.renameFiles(path, pathTif);
         }
         String uniqueIdentifier = null;
         if(pathTif.toFile().exists()){
             if(!pathJPG.toFile().exists()){
-                fileCreator.createJPG(pathTif,pathJPG);
-
+                FileCreator.createJPG(pathTif,pathJPG);
             }
             uniqueIdentifier = checksumCalculator.generateUniqueIdentifier(pathJPG);
         }
         System.out.println("Loading faksimile: " +  orderNumber);
         System.out.println(uniqueIdentifier);
         System.out.println(path);
-
-
         Faksimile faksimile = new Faksimile(orderNumber, uniqueIdentifier, pageParameter, pathHandler, scanQuality);
         if(faksimile.getTIFPath().toFile().exists()) {
             if (!faksimile.getJPGPath().toFile().exists()) {
-                fileCreator.createJPG(faksimile);
+                FileCreator.createJPG(faksimile);
             }
             if(!faksimile.getPDFPath().toFile().exists()){
-                fileCreator.createPDF(faksimile);
+                FileCreator.createPDF(faksimile);
             }
         }
         if(faksimile.getJPGPath().toFile().exists() && !faksimile.getOCRPath().toFile().exists()) {
-            fileCreator.createOCR(faksimile);
+            FileCreator.createOCR(faksimile);
         }
         return faksimile;
     }

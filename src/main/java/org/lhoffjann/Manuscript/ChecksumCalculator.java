@@ -24,18 +24,11 @@ public class ChecksumCalculator {
         }
         return sb.toString();
     }
-
-    // see this How-to for a faster way to convert
-    // a byte array to a HEX string
     public String generateUniqueIdentifier(Path path) throws Exception {
         if(path != null) {
             return createChecksum(path);
         }else {
             return null;
         }
-    }
-    public boolean validateUniqueIdentifier(Path path, String uniqueIdentifier) throws Exception {
-
-        return createChecksum(path) == uniqueIdentifier;
     }
 }

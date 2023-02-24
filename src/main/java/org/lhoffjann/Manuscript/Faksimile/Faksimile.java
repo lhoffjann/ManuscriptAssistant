@@ -1,4 +1,9 @@
-package org.lhoffjann.Manuscript;
+package org.lhoffjann.Manuscript.Faksimile;
+
+import org.lhoffjann.Manuscript.PathHandler;
+import org.lhoffjann.Manuscript.enums.FileType;
+import org.lhoffjann.Manuscript.enums.PageType;
+import org.lhoffjann.Manuscript.enums.ScanQuality;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -6,16 +11,14 @@ import java.nio.file.Path;
 public class Faksimile {
 
     private int orderNumber;
-    private final String uniqueID;
     private PageType pageParameter;
 
-    private PathHandler pathHandler;
+    final private PathHandler pathHandler;
 
     private ScanQuality scanQuality;
     public Faksimile(int orderNumber, String uniqueID, PageType pageParameter, PathHandler pathHandler, ScanQuality scanQuality) {
 
         this.orderNumber = orderNumber;
-        this.uniqueID = uniqueID;
         this.pageParameter = pageParameter;
         this.pathHandler = pathHandler;
         this.scanQuality = scanQuality;
@@ -25,18 +28,11 @@ public class Faksimile {
         return orderNumber;
     }
 
-    public String getUniqueID() {
-        return uniqueID;
-    }
-
     public void setOrderNumber(int orderNumber) {
         this.orderNumber = orderNumber;
     }
     public PageType getPageParameter() {
         return pageParameter;
-    }
-    public PathHandler getPathHandler() {
-        return pathHandler;
     }
 
     public ScanQuality getScanQuality() {
@@ -47,24 +43,22 @@ public class Faksimile {
         this.scanQuality = scanQuality;
     }
     public void changeScanQuality(ScanQuality scanQuality) throws IOException {
-        FaksimileHelper faksimileHelper = new FaksimileHelper();
         for (FileType fileType : FileType.values()) {
             System.out.println(fileType);
             Path filePath = pathHandler.getFilePath(orderNumber, fileType, this.pageParameter, this.scanQuality);
             if (filePath.toFile().exists()) {
-                faksimileHelper.renameFiles(filePath, pathHandler.getFilePath(orderNumber, fileType, pageParameter, scanQuality));
+                FaksimileHelper.renameFiles(filePath, pathHandler.getFilePath(orderNumber, fileType, pageParameter, scanQuality));
             }
         }
         setScanQuality(scanQuality);
     }
 
     public void changePageParameter(PageType pageParameter) throws IOException {
-        FaksimileHelper faksimileHelper = new FaksimileHelper();
         for (FileType fileType : FileType.values()) {
 
             Path filePath = pathHandler.getFilePath(orderNumber, fileType, this.pageParameter, scanQuality);
             if (filePath.toFile().exists()) {
-                faksimileHelper.renameFiles(filePath, pathHandler.getFilePath(orderNumber, fileType, pageParameter,scanQuality));
+                FaksimileHelper.renameFiles(filePath, pathHandler.getFilePath(orderNumber, fileType, pageParameter,scanQuality));
             }
         }
         setPageParameter(pageParameter);

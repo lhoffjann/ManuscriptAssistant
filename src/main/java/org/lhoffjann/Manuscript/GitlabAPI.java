@@ -9,6 +9,7 @@ import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.Issue;
 import org.gitlab4j.api.models.Project;
+import org.lhoffjann.Manuscript.enums.IssueDesc;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,21 +20,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GitlabAPI {
-    private GitLabApi gitLabApi;
-    private Project project;
-    private String projectID;
+    private final GitLabApi gitLabApi;
+    private final String projectID;
 
     public GitlabAPI() throws GitLabApiException {
         Dotenv dotenv = Dotenv.load();
         gitLabApi = new GitLabApi("https://gitlab.ub.uni-bielefeld.de/", dotenv.get("gitlab"));
         projectID = "3837";
-        project = gitLabApi.getProjectApi().getProject("3837");
+        Project project = gitLabApi.getProjectApi().getProject("3837");
     }
 
 
     public List<Issue> getIssue() throws GitLabApiException {
-        List<Issue> issues = gitLabApi.getIssuesApi().getIssues("3837");
-        return issues;
+        return gitLabApi.getIssuesApi().getIssues("3837");
     }
 
     public Issue findIssues(String manuscriptID) throws GitLabApiException, IOException {
@@ -49,18 +48,16 @@ public class GitlabAPI {
     }
 
     public Issue createIssue(String manuscriptID) throws IOException, GitLabApiException {
-
         Charset charset = StandardCharsets.UTF_8;
         String issueDesc = new String(getClass().getResourceAsStream(IssueDesc.ISSUE_NEW.getFilepath()).readAllBytes(), charset);
-        Issue issue = gitLabApi.getIssuesApi().createIssue(projectID, manuscriptID, issueDesc);
-        return issue;
+        return gitLabApi.getIssuesApi().createIssue(projectID, manuscriptID, issueDesc);
     }
 
-    public Issue updateIssue(String manuscriptID, IssueDesc issueDesc) throws GitLabApiException, IOException {
+    public void updateIssue(String manuscriptID, IssueDesc issueDesc) throws GitLabApiException, IOException {
         Issue issue = findIssues(manuscriptID);
         Charset charset = StandardCharsets.UTF_8;
         String issueDescStr = new String(getClass().getResourceAsStream(issueDesc.getFilepath()).readAllBytes(), charset);
-        Issue updatedIssue = gitLabApi
+        gitLabApi
                 .getIssuesApi()
                 .updateIssue(projectID,
                         issue.getIid(),
@@ -73,14 +70,12 @@ public class GitlabAPI {
                         null,
                         null,
                         null);
-        return updatedIssue;
     }
 
     public void selectUpdate(String manuscriptID) throws IOException, GitLabApiException {
-        ConsolePrompt prompt = new ConsolePrompt();                     // #2
-        PromptBuilder promptBuilder = prompt.getPromptBuilder();        // #3
-
-        promptBuilder.createListPrompt()                                // #4
+        ConsolePrompt prompt = new ConsolePrompt();
+        PromptBuilder promptBuilder = prompt.getPromptBuilder();
+        promptBuilder.createListPrompt()
                 .name("action")
                 .message("What do you want to do?")
                 .newItem("Issue_new").add()
@@ -90,20 +85,20 @@ public class GitlabAPI {
                 .newItem("Issue_postprocessed").add()
                 .newItem("GitlabIssue").add()
                 .addPrompt();
-
-        HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build()); // #5
+        HashMap<String, ? extends PromtResultItemIF> result = prompt.prompt(promptBuilder.build());
         ListResult result1 = (ListResult) result.get("action");
         System.out.println(result1.getSelectedId());
-        if (result1.getSelectedId() == "Issue_new") {
-            updateIssue(manuscriptID, IssueDesc.ISSUE_NEW);
-        } else if (result1.getSelectedId() == "Issue_scanned") {
-            updateIssue(manuscriptID, IssueDesc.ISSUE_SCANNED);
-        } else if (result1.getSelectedId() == "Issue_reviewed") {
-            updateIssue(manuscriptID, IssueDesc.ISSUE_REVIEWED);
-        } else if (result1.getSelectedId() == "Issue_reviewed_NE") {
-            updateIssue(manuscriptID, IssueDesc.ISSUE_REVIEWED_NE);
-        } else if (result1.getSelectedId() == "Issue_postprocessed") {
-            updateIssue(manuscriptID, IssueDesc.ISSUE_POSTPROCESSED);
+        switch (result1.getSelectedId()){
+            case("Issue_new"):
+                updateIssue(manuscriptID, IssueDesc.ISSUE_NEW);
+            case("Issue_scanned"):
+                updateIssue(manuscriptID, IssueDesc.ISSUE_SCANNED);
+            case("Issue_reviewed"):
+                updateIssue(manuscriptID, IssueDesc.ISSUE_REVIEWED);
+            case("Issue_reviewed_NE"):
+                updateIssue(manuscriptID, IssueDesc.ISSUE_REVIEWED_NE);
+            case("Issue_postprocessed"):
+                updateIssue(manuscriptID, IssueDesc.ISSUE_POSTPROCESSED);
         }
     }
 }
