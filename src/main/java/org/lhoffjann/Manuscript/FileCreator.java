@@ -1,60 +1,66 @@
 package org.lhoffjann.Manuscript;
 
-
-
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.Image;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
+import java.io.File;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 public class FileCreator {
 
     public void createJPG(Faksimile faksimile) throws IOException {
-            BufferedImage image = ImageIO.read(faksimile.getTIFPath().toFile());//Or image.jpg or image.tiff, etc.
-            ImageIO.write(image, "jpg", faksimile.getJPGPath().toFile());
-        }
+        BufferedImage image = ImageIO.read(faksimile.getTIFPath().toFile());// Or image.jpg or image.tiff, etc.
+        ImageIO.write(image, "jpg", faksimile.getJPGPath().toFile());
+    }
+
     public void createJPG(Path pathTif, Path pathJPG) throws IOException {
-        BufferedImage image = ImageIO.read(pathTif.toFile());//Or image.jpg or image.tiff, etc.
+        BufferedImage image = ImageIO.read(pathTif.toFile());// Or image.jpg or image.tiff, etc.
         ImageIO.write(image, "jpg", pathJPG.toFile());
     }
-        
 
-        public void createPDF(Faksimile faksimile){
-            Document document = new Document( PageSize.A4,0, 0, 0, 0);
-            String input = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
-            String output = faksimile.getPDFPath().toString();
+    public void createPDF(Faksimile faksimile) {
+        String tiffFilePath = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
+        String pdfFilePath = faksimile.getPDFPath().toString();
 
-            try {
-                FileOutputStream fos = new FileOutputStream(output);
-                PdfWriter writer = PdfWriter.getInstance(document, fos);
-                writer.open();
-                document.open();
-                document.setMargins(0,0,0,0);
-                Image image = Image.getInstance(input);
-               float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
-                        - document.rightMargin()) / image.getWidth()) * 100;
-                image.scalePercent(scaler);
-                document.add(image);
-                document.close();
-                writer.close();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            BufferedImage image = ImageIO.read(new File(tiffFilePath));
+
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage(new PDRectangle(imageWidth, imageHeight));
+            document.addPage(page);
+
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            PDImageXObject pdfImage = LosslessFactory.createFromImage(document, image);
+
+            contentStream.drawImage(pdfImage, 0, 0, imageWidth, imageHeight);
+
+            contentStream.close();
+            document.save(pdfFilePath);
+            document.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        public void createOCR(Faksimile faksimile) throws Exception {
-            OcrCreator ocrCreator = new OcrCreator();
-            if (!faksimile.getOCRPath().toFile().exists()) {
-                ocrCreator.createOCR(faksimile);
-            }
+    }
+
+    public void createOCR(Faksimile faksimile) throws Exception {
+        OcrCreator ocrCreator = new OcrCreator();
+        if (!faksimile.getOCRPath().toFile().exists()) {
+            ocrCreator.createOCR(faksimile);
         }
+    }
 }
