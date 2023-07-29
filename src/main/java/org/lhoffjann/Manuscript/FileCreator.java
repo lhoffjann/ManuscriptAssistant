@@ -1,7 +1,6 @@
 package org.lhoffjann.Manuscript;
 
 
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
@@ -9,10 +8,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
 
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+
+import com.itextpdf.awt.geom.AffineTransform;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Image;
+
 
 
 
@@ -40,9 +43,12 @@ public class FileCreator {
                 document.open();
                 document.setMargins(0,0,0,0);
                 Image image = Image.getInstance(input);
+
+                
                float scaler = ((document.getPageSize().getWidth() - document.leftMargin()
                         - document.rightMargin()) / image.getWidth()) * 100;
                 image.scalePercent(scaler);
+                
                 document.add(image);
                 document.close();
                 writer.close();
