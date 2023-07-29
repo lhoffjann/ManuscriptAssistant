@@ -16,6 +16,17 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.Image;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+
 
 
 
@@ -29,9 +40,45 @@ public class FileCreator {
         BufferedImage image = ImageIO.read(pathTif.toFile());//Or image.jpg or image.tiff, etc.
         ImageIO.write(image, "jpg", pathJPG.toFile());
     }
-        
+    public void createPDF(Faksimile faksimile) {
+        String tiffFilePath = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
+        String pdfFilePath = faksimile.getPDFPath().toString();
 
-        public void createPDF(Faksimile faksimile){
+        try {
+            // Load TIFF image
+            BufferedImage image = ImageIO.read(new File(tiffFilePath));
+
+            // Get the dimensions of the image
+            int imageWidth = image.getWidth();
+            int imageHeight = image.getHeight();
+
+            // Create PDF document with the same dimensions as the image
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage(new PDRectangle(imageWidth, imageHeight));
+            document.addPage(page);
+
+            // Create a content stream for the PDF
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+
+            // Create a PDImageXObject from the TIFF image
+            PDImageXObject pdfImage = LosslessFactory.createFromImage(document, image);
+
+            // Draw the image on the PDF page at position (0, 0)
+            contentStream.drawImage(pdfImage, 0, 0, imageWidth, imageHeight);
+
+            // Close the content stream and save the PDF document
+            contentStream.close();
+            document.save(pdfFilePath);
+            document.close();
+
+            System.out.println("TIFF converted to PDF successfully.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+        public void createPDFe(Faksimile faksimile){
             Document document = new Document( PageSize.A4,0, 0, 0, 0);
             String input = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
             String output = faksimile.getPDFPath().toString();
