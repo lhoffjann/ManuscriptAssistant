@@ -5,6 +5,9 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
+import java.util.Iterator;
+import java.io.ByteArrayOutputStream;
+
 
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
@@ -20,22 +23,56 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class FileCreator {
 
-    public void createJPG(Faksimile faksimile) throws IOException {
-        BufferedImage image = ImageIO.read(faksimile.getTIFPath().toFile());// Or image.jpg or image.tiff, etc.
-        ImageIO.write(image, "jpg", faksimile.getJPGPath().toFile());
+    private static BufferedImage compressImage(BufferedImage image, float compressionQuality) {
+        Iterator<javax.imageio.ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+        if (!writers.hasNext()) {
+            throw new IllegalStateException("No writers found");
+        }
+        javax.imageio.ImageWriter writer = writers.next();
+        javax.imageio.ImageWriteParam param = writer.getDefaultWriteParam();
+        param.setCompressionMode(javax.imageio.ImageWriteParam.MODE_EXPLICIT);
+        param.setCompressionQuality(compressionQuality);
+
+        BufferedImage compressedImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            javax.imageio.IIOImage outputImage = new javax.imageio.IIOImage(image, null, null);
+            writer.setOutput(ImageIO.createImageOutputStream(outputStream));
+            writer.write(null, outputImage, param);
+            writer.dispose();
+
+            compressedImage = ImageIO.read(new java.io.ByteArrayInputStream(outputStream.toByteArray()));
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return compressedImage;
     }
 
+
+
     public void createJPG(Path pathTif, Path pathJPG) throws IOException {
+        Dotenv dotenv = Dotenv.load();
+        final float compressionPercentage = Float.parseFloat(dotenv.get("compression_factor_jpg"));
+        final float compressionQuality = compressionPercentage / 100;
+        System.out.println(
+          compressionPercentage  
+        );
+        System.out.println(
+            compressionQuality
+        );
         BufferedImage image = ImageIO.read(pathTif.toFile());// Or image.jpg or image.tiff, etc.
-        ImageIO.write(image, "jpg", pathJPG.toFile());
+        ImageIO.write(compressImage(image, compressionQuality), "jpg", pathJPG.toFile());
     }
 
     public void createPDF(Faksimile faksimile) {
         Dotenv dotenv = Dotenv.load();
-        String tiffFilePath = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
-        String pdfFilePath = faksimile.getPDFPath().toString();
-        float percentScale = Float.parseFloat(dotenv.get("scaling_factor_pdf"));
-        float scalingFactor = percentScale / 100;
+        final String tiffFilePath = faksimile.getJPGPath().toString(); // .gif and .jpg are ok too!
+        final String pdfFilePath = faksimile.getPDFPath().toString();
+        final float percentScale = Float.parseFloat(dotenv.get("scaling_factor_pdf"));
+        final float scalingFactor = percentScale / 100;
         try {
             BufferedImage image = ImageIO.read(new File(tiffFilePath));
 
