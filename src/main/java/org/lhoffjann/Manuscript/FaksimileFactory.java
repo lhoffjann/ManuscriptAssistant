@@ -72,9 +72,12 @@ public class FaksimileFactory {
 
 
         Faksimile faksimile = new Faksimile(orderNumber, uniqueIdentifier, pageParameter, pathHandler, scanQuality);
-        if(faksimile.getTIFPath().toFile().exists()) {
-            if (!faksimile.getJPGPath().toFile().exists()) {
-                fileCreator.createJPG(faksimile);
+        final Path tiffPath = faksimile.getTIFPath();
+        final Path jpgPath = faksimile.getJPGPath();
+
+        if(tiffPath.toFile().exists()) {
+            if (!jpgPath.toFile().exists()) {
+                fileCreator.createJPG(tiffPath, jpgPath);
             }
             if(!faksimile.getPDFPath().toFile().exists()){
                 fileCreator.createPDF(faksimile);
