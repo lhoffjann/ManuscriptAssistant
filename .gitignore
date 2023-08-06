@@ -15,3 +15,4 @@ tests
 model-axe-341710-8ef8f8cafde2.json
 .env
 target
+google_ocr.json
