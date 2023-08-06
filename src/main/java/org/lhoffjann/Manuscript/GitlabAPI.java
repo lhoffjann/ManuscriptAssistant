@@ -18,21 +18,27 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class GitlabAPI {
     private GitLabApi gitLabApi;
     private Project project;
     private String projectID;
+    
+
 
     public GitlabAPI() throws GitLabApiException {
         Dotenv dotenv = Dotenv.load();
-        gitLabApi = new GitLabApi("https://gitlab.ub.uni-bielefeld.de/", dotenv.get("gitlab"));
-        projectID = "3837";
-        project = gitLabApi.getProjectApi().getProject("3837");
+        gitLabApi = new GitLabApi(dotenv.get("gitlab_host_url"), dotenv.get("gitlab_token"));
+        projectID = dotenv.get("gitlab_project_id");
+        project = gitLabApi.getProjectApi().getProject(projectID);
     }
 
 
     public List<Issue> getIssue() throws GitLabApiException {
-        List<Issue> issues = gitLabApi.getIssuesApi().getIssues("3837");
+        List<Issue> issues = gitLabApi.getIssuesApi().getIssues(projectID);
         return issues;
     }
 
@@ -49,17 +55,24 @@ public class GitlabAPI {
     }
 
     public Issue createIssue(String manuscriptID) throws IOException, GitLabApiException {
-
-        Charset charset = StandardCharsets.UTF_8;
-        String issueDesc = new String(getClass().getResourceAsStream(IssueDesc.ISSUE_NEW.getFilepath()).readAllBytes(), charset);
-        Issue issue = gitLabApi.getIssuesApi().createIssue(projectID, manuscriptID, issueDesc);
-        return issue;
+        String issueDesc = fileToString(IssueDesc.ISSUE_NEW.getFilepath());
+        return gitLabApi.getIssuesApi().createIssue(projectID, manuscriptID, issueDesc);
+        
+    }
+    private String fileToString(String filePath){
+        String issueDesc ="";
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+            issueDesc = new String(bytes, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return issueDesc;
     }
 
     public Issue updateIssue(String manuscriptID, IssueDesc issueDesc) throws GitLabApiException, IOException {
         Issue issue = findIssues(manuscriptID);
-        Charset charset = StandardCharsets.UTF_8;
-        String issueDescStr = new String(getClass().getResourceAsStream(issueDesc.getFilepath()).readAllBytes(), charset);
+        String issueDescStr = fileToString(issueDesc.getFilepath());
         Issue updatedIssue = gitLabApi
                 .getIssuesApi()
                 .updateIssue(projectID,
