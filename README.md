@@ -14,5 +14,7 @@ You'll need to add the following file paths to your .env now:
 -path_xml_template_folder
 -google_credentials_path (might be made optional)
 
-Now the program should be mostly functional. The gitlab tokens are optional for the users that want to upload the files to gitlab. Should these not be added the options 
+Now the program should be mostly functional. The gitlab tokens are optional for the users that want to upload the files to gitlab. Should these not be added, the options "Review manuscript" and "Create/Update Gitlab Issue" will end in an error.
+
+The factors at the bottom of the sample .env, will determan the scaling of the output pdf or the compression factor of all outputs, except ocr's. A value of 100 corresponds to the original size of the file. While the "scaling_factor_pdf" must be bigger than 0, the "compression_factor_jpg" cannot be over 100 and cannot be equal or smaller than 0.
 
