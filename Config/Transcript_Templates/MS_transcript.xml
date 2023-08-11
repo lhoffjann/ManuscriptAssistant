@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="../../../luhmann-datenmodell/common/QM/luhmann_ms.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<?xml-model href="../../../luhmann-datenmodell/common/QM/luhmann_ms.sch" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron" phase="#ALL"?>
 <?xml-model href="../../../luhmann-datenmodell/common/manuscripts/luhmann_ms.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
 <TEI xmlns:xi="http://www.w3.org/2001/XInclude" xmlns="http://www.tei-c.org/ns/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:html="http://www.w3.org/1999/xhtml" rendition="luhmann_ms">
 	<teiHeader>
@@ -24,6 +24,7 @@
 					<msContents class="">
 						<msItem>
 							<idno type="Niklas-Luhmann-Werk" corresp="#nla_W_"/>
+							<idno type="Niklas-Luhmann-Findbuch"/>
 							<author>
 								<name key="luhmann_niklas">
 									<forename>Niklas</forename>
