@@ -8,11 +8,11 @@ Now add to your .env (a sample one should be included) the file path to the "pat
 After that run the once and use the "generat PDF" option, there will be an error but the program will create the nessecary folders.
 
 You'll need to add the following file paths to your .env now:
--path_pdf_folder
--path_xml_folder
--path_issue_folder
--path_xml_template_folder
--google_credentials_path (might be made optional)
+- path_pdf_folder
+- path_xml_folder
+- path_issue_folder
+- path_xml_template_folder
+- google_credentials_path (might be made optional)
 
 Now the program should be mostly functional. The gitlab tokens are optional for the users that want to upload the files to gitlab. Should these not be added, the options "Review manuscript" and "Create/Update Gitlab Issue" will end in an error.
 
