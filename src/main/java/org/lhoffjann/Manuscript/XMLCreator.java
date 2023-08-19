@@ -31,8 +31,8 @@ public class XMLCreator {
     }
 
     public String addPageBreaks(Faksimile faksimile) {
-        String filename = faksimile.getTIFPath().getFileName().toString();
-        System.out.println(filename.split("."));
+        String filename = faksimile.getName();
+        System.out.println(filename);
         String pageBreak = "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" + filename + "\"/>";
         return pageBreak;
     }
@@ -62,7 +62,6 @@ public class XMLCreator {
         List<Integer> emptyLines = new ArrayList<>();
         int empty = 0;
         for(String string : ocrContent){
-            //System.out.println(string);
             empty++;
             if (string.trim().isEmpty()){
                 emptyLines.add(empty - 1);
@@ -83,9 +82,6 @@ public class XMLCreator {
             Pattern pattern = Pattern.compile("<pb ", Pattern.CASE_INSENSITIVE);
 
             while (emptyLines.size() > 0) {
-                //System.out.println("hello");
-                //System.out.println(ocrContent.get(emptyLines.get(0) + 1));
-                //System.out.println(ocrContent.get(emptyLines.get(0) - 1));
                 if (emptyLines.size() == NumberOfEmptyLines) {
                     ocrContent.set(emptyLines.remove(0), "<p>");
                     openingParagraph++;

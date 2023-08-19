@@ -55,7 +55,15 @@ public class PathHandler {
         }
         return Paths.get(getMasterImagesPath().toString(), manuscriptPath.getFileName() + "_" +String.format("%04d", orderNumber)  + "_" + pageType.token + ".tif");
     }
+    
+    public String getFileName(int orderNumber, PageType pageType, ScanQuality scanQuality) {
+        if(scanQuality == ScanQuality.BAD){
 
+            return manuscriptPath.getFileName() + "_" +String.format("%04d", orderNumber)  + "_" + pageType.token + "_ne";
+            }
+        return manuscriptPath.getFileName() + "_" +String.format("%04d", orderNumber)  + "_" + pageType.token;
+
+    }
 
     public Path getFilePath(int orderNumber, FileType suffix, PageType pageType, ScanQuality scanQuality) {
         if (suffix == FileType.JPG) {
