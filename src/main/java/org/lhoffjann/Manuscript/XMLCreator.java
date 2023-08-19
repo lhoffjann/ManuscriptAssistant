@@ -24,14 +24,14 @@ public class XMLCreator {
             pageContent.add(addPageBreaks(faksimile));
             String line;
             while ((line = br.readLine()) != null) {
-                pageContent.add(addLineBreaks(line));
+                pageContent.add(line);
             }
             ocrContent.addAll(pageContent);
         }
     }
 
     public String addPageBreaks(Faksimile faksimile) {
-        String pageBreak = "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" +faksimile.getTIFPath().getFileName()+ "\"/>";
+        String pageBreak = "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" + faksimile.getName() + "\"/>";
         return pageBreak;
     }
 
@@ -60,7 +60,6 @@ public class XMLCreator {
         List<Integer> emptyLines = new ArrayList<>();
         int empty = 0;
         for(String string : ocrContent){
-            //System.out.println(string);
             empty++;
             if (string.trim().isEmpty()){
                 emptyLines.add(empty - 1);
@@ -81,9 +80,6 @@ public class XMLCreator {
             Pattern pattern = Pattern.compile("<pb ", Pattern.CASE_INSENSITIVE);
 
             while (emptyLines.size() > 0) {
-                //System.out.println("hello");
-                //System.out.println(ocrContent.get(emptyLines.get(0) + 1));
-                //System.out.println(ocrContent.get(emptyLines.get(0) - 1));
                 if (emptyLines.size() == NumberOfEmptyLines) {
                     ocrContent.set(emptyLines.remove(0), "<p>");
                     openingParagraph++;
@@ -116,9 +112,19 @@ public class XMLCreator {
 
     public void createXML(Manuscript manuscript) throws IOException,JDOMException {
         prepareOCR(manuscript);
-
+        Dotenv dotenv = Dotenv.load();
+        Path pathXmlPath = Path.of(dotenv.get("path_xml_template_folder"));
         SAXBuilder sax = new SAXBuilder();
-        Document doc = sax.build(getClass().getResourceAsStream("/MS_transcript.xml"));
+
+
+        Document doc;
+        try{
+            doc = sax.build(pathXmlPath.toFile()); 
+        } catch (Exception e) {
+            System.out.println("The XML template has an error.");
+            return;
+        }
+
         Element rootNode = doc.getRootElement();
         Element teiHeaderNode= rootNode.getChild("teiHeader", Namespace.getNamespace("http://www.tei-c.org/ns/1.0"));
         Element facsimileNode = rootNode.getChild("facsimile", Namespace.getNamespace("http://www.tei-c.org/ns/1.0"));
@@ -157,7 +163,7 @@ public class XMLCreator {
         // xmlOutput.output(doc, System.out);
 
         // write to a file
-        Dotenv dotenv = Dotenv.load();
+        
 
         try (FileOutputStream output =
                      new FileOutputStream(Path.of(dotenv.get("path_xml_folder") , manuscript.getManuscriptID()).toString()+ ".xml")) {

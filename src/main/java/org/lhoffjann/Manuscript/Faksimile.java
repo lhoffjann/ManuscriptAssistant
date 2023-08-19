@@ -84,5 +84,8 @@ public class Faksimile {
     public Path getTIFPath(){
         return pathHandler.getFilePath(orderNumber, FileType.TIF, pageParameter, scanQuality);
     }
+    public String getName(){
+        return pathHandler.getFileName(orderNumber, pageParameter, scanQuality);
+    }
     public Path getMasterImagesPath(){return pathHandler.getMasterImagesFilePath(orderNumber, pageParameter);}
 }
