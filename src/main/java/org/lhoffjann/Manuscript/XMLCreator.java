@@ -31,9 +31,7 @@ public class XMLCreator {
     }
 
     public String addPageBreaks(Faksimile faksimile) {
-        String filename = faksimile.getName();
-        System.out.println(filename);
-        String pageBreak = "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" + filename + "\"/>";
+        String pageBreak = "<pb type =\"" + faksimile.getPageParameter().side + "\" facs=\"#" + faksimile.getName() + "\"/>";
         return pageBreak;
     }
 
