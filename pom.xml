@@ -7,6 +7,7 @@
     <groupId>org.lhoffjann</groupId>
     <artifactId>ManuscriptAssistant</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -88,11 +89,76 @@
     </dependencies>
 
 
-
+  
+    
+   
+    
+   
     <build>
+      <plugins>
+        <plugin>
+          <groupId>com.akathist.maven.plugins.launch4j</groupId>
+          <artifactId>launch4j-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>l4j-clui</id>
+              <phase>package</phase>
+              <goals><goal>launch4j</goal></goals>
+              <configuration>
+                <headerType>console</headerType>
+                <outfile>target/ManuscriptAssistant-1.0-SNAPSHOT.exe</outfile>
+                <jar>target/ManuscriptAssistant-1.0-SNAPSHOT.jar</jar>
+                <errTitle>encc</errTitle>
+                <classPath>
+                  <mainClass>com.akathist.encc.Clui</mainClass>
+                  <addDependencies>false</addDependencies>
+                  <preCp>anything</preCp>
+                </classPath>
+                <jre>
+                  <minVersion>1.5.0</minVersion>
+                  <path>../jre</path>
+                  <opts>
+                    <opt>-Djava.endorsed.dirs=./endorsed</opt>
+                  </opts>
+                </jre>
+                <versionInfo>
+                  <fileVersion>1.2.3.4</fileVersion>
+                  <txtFileVersion>txt file version?</txtFileVersion>
+                  <fileDescription>a description</fileDescription>
+                  <copyright>my copyright</copyright>
+                  <productVersion>4.3.2.1</productVersion>
+                  <txtProductVersion>txt product version</txtProductVersion>
+                  <productName>E-N-C-C</productName>
+                  <internalName>ccne</internalName>
+                  <originalFilename>original.exe</originalFilename>
+                </versionInfo>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>assembly</id>
+              <phase>package</phase>
+              <goals><goal>single</goal></goals>
+              <configuration>
+                <descriptors>
+                  <descriptor>assembly.xml</descriptor>
+                </descriptors>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+
+</project>
+    <!-- <build>
         <plugins>
 
-            <!-- Need at least 2.22.0 to support JUnit 5 -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -152,7 +218,7 @@
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase> <!-- packaging phase -->
+                        <phase>package</phase> 
                         <goals>
                             <goal>single</goal>
                         </goals>
@@ -168,5 +234,4 @@
             </resource>
         </resources>
 
-    </build>
-</project>
+    </build> -->
