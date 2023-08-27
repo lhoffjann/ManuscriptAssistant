@@ -106,7 +106,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version> <!-- Use the latest version -->
+                <version>3.5.0</version> <!-- Use the latest version -->
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -114,13 +114,20 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>io.grpc</pattern>
-                                    <shadedPattern>Manuscript.shaded.io.grpc</shadedPattern>
-                                </relocation>
-                            </relocations>
+                            <!--
+                            <archive>
+                                <manifest>
+                                    <addClasspath>true</addClasspath>
+                                    <mainClass>org.lhoffjann.Manuscript.Main</mainClass>
+                                </manifest>
+                            </archive>
+                            -->
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
                             <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <mainClass>org.lhoffjann.Manuscript.Main</mainClass>
+                                </transformer>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                                     <resource>META-INF/services/io.grpc.LoadBalancerProvider</resource>
                                 </transformer>
@@ -129,6 +136,7 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
@@ -143,7 +151,7 @@
                   </descriptorRefs>
                 </configuration>
             </plugin>
-
+            
             <plugin>
                 <groupId>com.akathist.maven.plugins.launch4j</groupId>
                 <artifactId>launch4j-maven-plugin</artifactId>
@@ -202,7 +210,8 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+                </plugin>
+            -->
         </plugins>
     </build>
 
