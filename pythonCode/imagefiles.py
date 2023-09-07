@@ -2,7 +2,7 @@ from pathlib import Path
 import cv2
 import re
 from PIL import Image
-from src.PathHandler import FileType, ManuscriptPathHandler
+from PathHandler import FileType, ManuscriptPathHandler
 import os, sys, subprocess
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice

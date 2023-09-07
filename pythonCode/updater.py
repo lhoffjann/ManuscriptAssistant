@@ -1,5 +1,5 @@
 from __future__ import print_function, unicode_literals
-from src import backend_db
+import backend_db
 #Import
 import gitlab
 import numpy as np

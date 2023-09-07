@@ -1,11 +1,11 @@
-from src.manuscript import Manuscript
+from manuscript import Manuscript
 from pathlib import Path
 import os
-from src.navigater import Navigator
+from navigater import Navigator
 from InquirerPy import inquirer
 from dotenv import load_dotenv
-from src.gitlabAPIhandler import GitlabAPIHandler
-from src.xmlGenerator import XMLGenerator
+from gitlabAPIhandler import GitlabAPIHandler
+from xmlGenerator import XMLGenerator
 #TODO: select Option via Enum, via String
 def main():
     

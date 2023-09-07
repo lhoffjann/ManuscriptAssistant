@@ -4,8 +4,8 @@ import pandas as pd
 from InquirerPy.separator import Separator
 from pathlib import Path
 import itertools
-from src.gitlabAPIhandler import GitlabAPIHandler
-from src.backend_db import JSONHandler
+from gitlabAPIhandler import GitlabAPIHandler
+from backend_db import JSONHandler
 class Navigator:
     def __init__(self, path_scans: Path, path_master: Path, gitlabapihandler: GitlabAPIHandler):
         self.path_scans = path_scans
@@ -13,7 +13,7 @@ class Navigator:
         self.manuscripts_in_master_images = []
         self.scanned_manuscripts = []
         self.gitlabapihandler = gitlabapihandler
-        self.jsonhandler = JSONHandler('issue.json')
+        #self.jsonhandler = JSONHandler('issue.json')
         self.to_be_scanned_manuscripts = []
         self.not_scanned_manuscripts = []
         self.all_manuscripts = []

@@ -6,7 +6,7 @@ import re
 
 dotenv_path = Path.cwd() / '.env'
 load_dotenv(dotenv_path)
-gitlab_token = os.getenv("gitlab")
+gitlab_token = os.getenv("gitlab_token")
 
 
 class GitlabAPIHandler:
@@ -14,11 +14,11 @@ class GitlabAPIHandler:
     def __init__(self):
         self.issue = None
         self.issue_id = None
-        self.gl = gitlab.Gitlab('https://gitlab.ub.uni-bielefeld.de/', private_token=gitlab_token)
+        self.gl = gitlab.Gitlab(os.getenv("gitlab_host_url"), private_token=gitlab_token)
         self.gl.auth()
         self.id_proofreader = 144
         self.id_scan_operator = 1432
-        self.ms_project = self.gl.projects.get(3837)
+        self.ms_project = self.gl.projects.get(os.getenv("gitlab_project_id"))
 
     def get_editable_issue(self):
         ms_issues = self.ms_project.issues.list()

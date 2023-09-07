@@ -4,9 +4,9 @@ import os
 from pathlib import Path
 from typing import List
 from PyPDF2 import PdfFileMerger
-from src.PathHandler import FileType, ManuscriptPathHandler
-from src.gitlabAPIhandler import GitlabAPIHandler
-from src.page import Page
+from PathHandler import FileType, ManuscriptPathHandler
+from gitlabAPIhandler import GitlabAPIHandler
+from page import Page
 import itertools
 from dotenv import load_dotenv
 
@@ -48,7 +48,8 @@ class Manuscript:
         files_grabbed.extend(self.path.glob('*.tif'))
         files_grabbed.sort()
         page_number = 1
-
+        print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa')
+        print(files_grabbed)
         for i in range(0, len(files_grabbed), 2):
             images = files_grabbed[i:i + 2]
             self.pages.append(Page(page_number, images[0], images[1], self.path_handler))

@@ -1,6 +1,6 @@
-from src.imagefiles import ImageFiles
+from imagefiles import ImageFiles
 from enum import Enum
-from src.textExtractor import detect_text
+from textExtractor import detect_text
 
 class LineEnd(Enum):
     LINE_WITH_DIVIS = '<lb type="inWord"/>'

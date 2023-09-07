@@ -1,9 +1,9 @@
 # Imports
-from src.corner_detect import return_diagonal_lines
+from corner_detect import return_diagonal_lines
 from pathlib import Path
-from src.imagefiles import ImageFiles, PageTypes
-from src.PathHandler import ManuscriptPathHandler
-from src.ocrgenerator import OCRgenerator
+from imagefiles import ImageFiles, PageTypes
+from PathHandler import ManuscriptPathHandler
+from ocrgenerator import OCRgenerator
 
 
 

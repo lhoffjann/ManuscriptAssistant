@@ -1,5 +1,5 @@
 from lxml import etree
-from src.manuscript import Manuscript
+from manuscript import Manuscript
 import re
 from InquirerPy import inquirer
 from InquirerPy.base.control import Choice
