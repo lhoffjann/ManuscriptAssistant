@@ -1,0 +1,15 @@
+pandas~=1.4.1
+numpy~=1.22.2
+opencv-python~=4.5.5.62
+google-cloud-vision
+Pillow~=9.0.1
+matplotlib~=3.5.1
+google-cloud-documentai
+google-cloud-storage
+PyPDF2~=1.27.12
+InquirerPy~=0.3.3
+python-gitlab~=3.4.0
+python-dotenv~=0.20.0
+lxml
+beautifulsoup4~=4.11.1
+

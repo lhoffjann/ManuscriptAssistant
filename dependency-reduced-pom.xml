@@ -16,11 +16,25 @@
               <goal>shade</goal>
             </goals>
             <configuration>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
               <transformers>
                 <transformer>
-                  <mainClass>org.lhoffjann.Manuscript.Main</mainClass>
+                  <manifestEntries>
+                    <Main-Class>org.lhoffjann.Manuscript.Main</Main-Class>
+                    <X-Compile-Source-JDK>18</X-Compile-Source-JDK>
+                    <X-Compile-Target-JDK>18</X-Compile-Target-JDK>
+                  </manifestEntries>
                 </transformer>
                 <transformer>
                   <resource>META-INF/services/io.grpc.LoadBalancerProvider</resource>
